@@ -1,12 +1,12 @@
 package com.mjorgeazevedo.incomeTaxCalculator;
 
-import java.text.NumberFormat;
+import java.text.DecimalFormat;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import com.mjorgeazevedo.incomeTaxCalculator.entity.Asset;
+import com.mjorgeazevedo.incomeTaxCalculator.entity.AssetSummary;
 import com.mjorgeazevedo.incomeTaxCalculator.entity.Category;
 import com.mjorgeazevedo.incomeTaxCalculator.entity.Operation;
 import com.mjorgeazevedo.incomeTaxCalculator.entity.Transaction;
@@ -29,7 +29,7 @@ public class BrazilianIncomeTaxesCalculator {
 		List<Transaction> transactions = XLSReader.getTransactionsFromFile(file);
 		Collections.sort(transactions, (a,b)->a.getDate().compareTo(b.getDate()));
 		
-		Map<String, Asset> result = new HashMap<String, Asset>();
+		Map<String, AssetSummary> result = new HashMap<String, AssetSummary>();
 		
 		for (Transaction transaction : transactions) {
 			if (transaction.getDate().getYear() <= year) {
@@ -39,13 +39,13 @@ public class BrazilianIncomeTaxesCalculator {
 					
 					//System.out.println(transaction);
 					
-					Asset valuesOfYear;
+					AssetSummary valuesOfYear;
 					
-					if (result.containsKey(transaction.getId())) {
-						valuesOfYear = result.get(transaction.getId());
+					if (result.containsKey(transaction.getAsset().getId())) {
+						valuesOfYear = result.get(transaction.getAsset().getId());
 					} else {
-						valuesOfYear = new Asset();
-						valuesOfYear.setId(transaction.getId());
+						valuesOfYear = new AssetSummary();
+						valuesOfYear.setAsset(transaction.getAsset());
 					}
 					
 					int signal = Operation.PURCHASE.equals(transaction.getOperation()) ? 1 : -1;
@@ -60,20 +60,26 @@ public class BrazilianIncomeTaxesCalculator {
 						valuesOfYear.setFinalTotalValue(valuesOfYear.getFinalTotalValue() + (transaction.getAmount() * signal));
 					}
 					
-					result.put(transaction.getId(), valuesOfYear);
+					result.put(transaction.getAsset().getId(), valuesOfYear);
 				}
 			}	
 		}
 		
+		System.out.println("TICKER;NOME;CNPJ;31/12/" + (year-1) + ";31/12/" + year);
+		
 		for (String id : result.keySet()) {
-			Asset valuesOfYear = result.get(id);
+			AssetSummary valuesOfYear = result.get(id);
 			
 			if (valuesOfYear.getInitialQuantity() > 0 || valuesOfYear.getFinalQuantity() > 0) {
 				//System.out.println(valuesOfYear);
 				
-				System.out.println(valuesOfYear.getId() + 
-						";" + NumberFormat.getCurrencyInstance().format(valuesOfYear.getInitialTotalValue()) +
-						";" + NumberFormat.getCurrencyInstance().format(valuesOfYear.getFinalTotalValue() < 0 || valuesOfYear.getFinalQuantity() <= 0 ? 0 : valuesOfYear.getFinalTotalValue())
+				DecimalFormat df = new DecimalFormat("#,##0.00");
+				
+				System.out.println(valuesOfYear.getAsset().getId() +
+						";" + valuesOfYear.getAsset().getName() + 
+						";" + valuesOfYear.getAsset().getCnpj() + 
+						";" + df.format(valuesOfYear.getInitialTotalValue()) +
+						";" + df.format(valuesOfYear.getFinalTotalValue() < 0 || valuesOfYear.getFinalQuantity() <= 0 ? 0 : valuesOfYear.getFinalTotalValue())
 						);
 			}	
 		}

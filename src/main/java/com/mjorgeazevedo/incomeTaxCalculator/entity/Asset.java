@@ -2,85 +2,29 @@ package com.mjorgeazevedo.incomeTaxCalculator.entity;
 
 public class Asset {
 	private String id;
-	private double initialQuantity;
-	private double finalQuantity;
-	private double initialTotalValue;
-	private double finalTotalValue;
+	private String name;
+	private String cnpj;
 	
-	public double getProfit() {
-		if (finalQuantity == 0) {
-			return finalTotalValue - initialTotalValue;
-		} else {
-			return 0;
-		}
+	public Asset(String id, String name, String cnpj) {
+		this.id = id;
+		this.name = name;
+		this.cnpj = cnpj;
 	}
 
-	
-	
 	public String getId() {
 		return id;
 	}
-
-
-
-	public void setId(String id) {
-		this.id = id;
+	
+	public String getName() {
+		return name;
 	}
-
-
-
-	public double getInitialQuantity() {
-		return initialQuantity;
+	
+	public String getCnpj() {
+		return cnpj;
 	}
-
-
-
-	public void setInitialQuantity(double initialQuantity) {
-		this.initialQuantity = initialQuantity;
-	}
-
-
-
-	public double getFinalQuantity() {
-		return finalQuantity;
-	}
-
-
-
-	public void setFinalQuantity(double finalQuantity) {
-		this.finalQuantity = finalQuantity;
-	}
-
-
-
-	public double getInitialTotalValue() {
-		return initialTotalValue;
-	}
-
-
-
-	public void setInitialTotalValue(double initialTotalValue) {
-		this.initialTotalValue = initialTotalValue;
-	}
-
-
-
-	public double getFinalTotalValue() {
-		return finalTotalValue;
-	}
-
-
-
-	public void setFinalTotalValue(double finalTotalValue) {
-		this.finalTotalValue = finalTotalValue;
-	}
-
-
-
+	
 	@Override
 	public String toString() {
-		return "Asset [id=" + id + ", initialQuantity=" + initialQuantity + ", finalQuantity=" + finalQuantity
-				+ ", initialTotalValue=" + initialTotalValue + ", finalTotalValue=" + finalTotalValue + ", getProfit()="
-				+ getProfit() + "]";
-	}
+		return "Asset [id=" + id + ", name=" + name + ", cnpj=" + cnpj + "]";
+	} 
 }

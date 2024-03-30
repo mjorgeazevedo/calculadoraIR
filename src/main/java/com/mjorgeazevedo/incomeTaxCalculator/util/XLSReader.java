@@ -53,7 +53,7 @@ public class XLSReader {
 							transaction.setCategory(Category.getCategory(cell.getStringCellValue()));
 							break;
 						case 2:
-							transaction.setId(cell.getStringCellValue());
+							transaction.setAsset(AssetFactory.createAsset(cell.getStringCellValue()));
 							break;
 						case 3:
 							transaction.setOperation(Operation.getOperation(cell.getStringCellValue()));
